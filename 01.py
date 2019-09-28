@@ -11,6 +11,7 @@ def parking(hour, day):
             return "right"
         else:
             return "left"
+        
 day=int(input("day: "))
 hour=int(input("hour: "))
 print(parking(hour, day))
