@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    {% if pos != "none" %}
+    <title>{{blog.title}} - Блог хорощего электрика</title>
+    {% else %}
+    <title>Статья не найдена - Блог хорощего электрика</title>
+    {% endif %}
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+</head>
+<body>
+
+
+    {% if pos != "none" %}
+    <h1>{{blog.title}}</h1>
+        <h6>Дата создания: {{blog.created_at}}<br></h6>
+        <br>
+        <h6>{{blog.text}} <br></h6>
+        <br>
+        <h3> Комментарии: <br></h3>
+            {% for comment in blog.comments %}
+                <h5>{{comment.name}} <br></h5>
+                <h6>{{comment.text}} <br></h6>
+            {% endfor %}
+        <br>
+            <form action="" method="post">
+            <h5> Написать комментарий: <br> </h5>
+            <h6> Имя: <input type="text" size=10 name = "name"> <br> </h6>
+            <h6> Текст комментраия: <input type="text" size=50 name = "comment" ><br> </h6>
+            <button type="submit">Отправить!</button>
+        </form>
+    {% else %}
+        <h1>Статья не найдена </h1>
+    {% endif %}
+</body>
+</html>
