@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Блог хорошего электрика</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+</head>
+<body>
+
+<div class="container">
+    <h1>такие пироги - блог хорошего электрика</h1>
+    <form action="" method="post" name="s">
+        <input type="search" name="text">
+        <input type="submit" value="Поиск по названию">
+    </form>
+    <br>
+    <h4>Сортировать по:</h4>
+        <form action="" method="post" name="sort">
+        <select name="sort1">
+            <option selected value="date">Дате</option>
+            <option value="name">Названию</option>
+        </select>
+        <select name="sort2">
+            <option selected value="up">Возрастанию</option>
+            <option value="down">Убыванию</option>
+        </select>
+        <button name="show"> Показать результаты!</button>
+    </form>
+    <br>
+    <br>
+    <h5>
+        {% for i in range(num_of_blog) %}
+            <a href="{{ '/entry/%s'%blog[i].key}}"> {{ blog[i].title }} </a> <br>
+            Дата создания: {{ blog[i].created_at }} <br>
+            {% if lst_num_comm[i] != 0 %}
+                всего комментариев: {{lst_num_comm[i]}} <br>
+            {% else%}
+                нет комментариев
+            {% endif%}
+            <br>
+        {% endfor %}
+    </h5>
+    <a class="btn btn-outline-primary" href="{{ url_for('create_entry_page') }}">Добавить новую статью</a>
+</div>
+</body>
+</html>
