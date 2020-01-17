@@ -12,11 +12,12 @@ class MyError(Exception):
 
 # проверка корректности входных данных
 def correct_test(n, preferences):
-    set_lst = set(range(1, n+1))
-    if set(preferences["Market A"].keys()) != set(preferences["Market B"].keys()) == set_lst:
+    lst = list(range(1, n + 1))
+    set_lst = set(lst)
+    if list(preferences["Market A"].keys()) != lst or list(preferences["Market B"].keys()) != lst:
         return True
     for i, j in zip(preferences["Market A"].values(), preferences["Market B"].values()):
-        if set(i) != set_lst or set(j) != set_lst:
+        if set(i) != set_lst or set(j) != set_lst or n != len(i) or n != len(j):
             return True
     return False
 
