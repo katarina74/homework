@@ -4,15 +4,20 @@ import xlrd, xlwt
 # класс ошибки неправильных входных данных
 class MyError(Exception):
     def __init__(self, text):
-        self.txt = text
+        self.text = text
+
+    def get_text(self):
+        return self.text
 
 
 # проверка корректности входных данных
-def correct_test(preferences):
-    if preferences["Market A"].keys() != preferences["Market B"].keys():
+def correct_test(n, preferences):
+    set_lst = set(range(1, n+1))
+    if set(preferences["Market A"].keys()) != set(preferences["Market B"].keys()) == set_lst:
         return True
-    elif set(preferences["Market A"].keys()) != set(preferences["Market B"].keys()):
-        return True
+    for i, j in zip(preferences["Market A"].values(), preferences["Market B"].values()):
+        if set(i) != set_lst or set(j) != set_lst:
+            return True
     return False
 
 
@@ -24,24 +29,24 @@ def get_data_base(fname):
 
         preferences = {"Market A": dict(), "Market B": dict()}
         s = sheet.nrows
-        n = int(sheet.nrows/2)
-        if n*2 != s:
-            raise MyError("неравное количество мужчин и женщин!")
-
+        n = int(s/2)
+        if s % 2:
+            raise MyError("Неравное количество мужчин и женщин!")
         for row_num in range(n):
             preferences["Market A"][row_num+1] = list(map(int, sheet.row_values(row_num)[1:]))
         for row_num in range(n):
             preferences["Market B"][row_num+1] = list(map(int, sheet.row_values(row_num+n)[1:]))
-        if correct_test(preferences):
-            raise MyError("неправильно заданы предпочтения!")
-        return preferences
+        if correct_test(n, preferences):
+            raise MyError("Неправильно заданы предпочтения!")
 
     except xlrd.biffh.XLRDError:
-        return "неправильный формат файла!"
+        return "Неправильный формат файла!"
     except MyError as mr:
-        return mr
+        return mr.get_text()
     except:
-        return "неправильные входные данные или не выбран файл!"
+        return "Неправильные входные данные или не выбран файл!"
+    else:
+        return preferences
 
 
 def save_result(solution, f_name):
@@ -52,5 +57,7 @@ def save_result(solution, f_name):
             ws.write(i, 0, solution[i][0])
             ws.write(i, 1, solution[i][1])
         wb.save(f_name)
+        return "Решение успешно сохранено!"
     else:
-        return "Неверный формат файла, решение не может быть сохранено!"
+        return "Неверный формат файла! Решение не может быть сохранено!"
+
