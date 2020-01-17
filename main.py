@@ -8,7 +8,7 @@ from rotations_3 import get_main
 
 
 # обработка ошибок
-class MyError(Exception):
+class MyErrorMain(Exception):
     pass
 
 
@@ -49,32 +49,44 @@ class Window(QMainWindow):
         self.show()
 
     def open_file(self):
-        self.f_name = QFileDialog.getOpenFileName(self, "QFileDialog.getOpenFileName()", "", "All Files (*);;Excel Files (*.xls)")[0]
+        self.f_name = QFileDialog.getOpenFileName(self, "Выбрать файл с исходными данными", "",
+                                                  "All Files (*);;Excel Files (*.xls)")[0]
+
+    def save_q(self):
+        msgBox = QMessageBox(self)
+        msgBox.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
+        msgBox.setText("Решение найдено. Сохранить?")
+        msgBox.setWindowTitle("Сохранить?")
+        return msgBox.exec_()
+
+    def save_file(self):
+        self.f_name2 = QFileDialog.getSaveFileName(self, "Сохранить результат", "",
+                                                             "All Files (*);;Excel Files (*.xls)")[0]
 
     def get_solution(self):
         try:
             # обработка ошибки чтения файла
             self.preferences = get_data_base(self.f_name)
             if type(self.preferences) is str:
-                raise MyError()
+                raise MyErrorMain()
             else:
                 self.pic, self.solution = get_main(self.preferences)
                 self.pic.show()
 
-                msgBox = QMessageBox(self)
-                msgBox.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
                 if self.solution:
-                    msgBox.setText("Решение найдено. Сохранить?")
-                    msgBox.setWindowTitle("Сохранить?")
-                    result = msgBox.exec_()
-                    if QMessageBox.Yes == result:
-                        self.open_file()
-                        test = save_result(self.solution, self.f_name)
-                        if test:
-                            QMessageBox.critical(self, "Ошибка", test, QMessageBox.Ok)
+                    if QMessageBox.Yes == self.save_q():
+                        self.save_file()
+                        if self.f_name2:
+                            info = save_result(self.solution, self.f_name2)
+                            QMessageBox.information(self, "Сохранение", info, QMessageBox.Ok)
+                        else:
+                             QMessageBox.critical(self, "Ошибка", "Не был выбран файл!", QMessageBox.Ok)
 
-        except MyError:
+        except MyErrorMain:
             QMessageBox.critical(self, "Ошибка ", self.preferences, QMessageBox.Ok)
+
+        except:
+            QMessageBox.critical(self, "Ошибка ", "Возникла непредвиденная ошибка!", QMessageBox.Ok)
 
 
 if __name__ == '__main__':
