@@ -135,15 +135,15 @@ def fill1(array_men, couples0, preferences, rotations, cycles, weights, shortlis
             "shortlist": shortlists,  # до исплючения
             "eliminated": eliminated_all[i - 1]
         }
-    return couples, shortlists1, 1, num_of_rotations, assoc_rotations
+    return couples, shortlists1, num_of_rotations, assoc_rotations
 
 
 # определение предков
-def get_predecessors(cycles, rotations, assoc_rotations, filled0, filled1):
+def get_predecessors(cycles, rotations, assoc_rotations, filled1):
     predecessors = []
     for rotation, cycle in zip(rotations, cycles):
         pred = []
-        for i in range(filled0, filled1+1):  # потенциальные предки
+        for i in range(1, filled1+1):  # потенциальные предки
             for man in cycle[:-1]:
                 pref_list = assoc_rotations[i]["shortlist"]["Market A"][man]
                 pos = pref_list.index(rotation[cycle[:-1].index(man)][1])
@@ -156,10 +156,10 @@ def get_predecessors(cycles, rotations, assoc_rotations, filled0, filled1):
 
 
 # заполнение после первой итерации
-def fill(couples0, preferences, array_men, rotations, cycles, weights, shortlists, assoc_rotations, filled0, filled1):
+def fill(couples0, preferences, array_men, rotations, cycles, weights, shortlists, assoc_rotations, filled1):
     num_of_rotations = len(rotations)
     counter = num_of_rotations+filled1
-    predecessors = get_predecessors(cycles, rotations, assoc_rotations, filled0, filled1)
+    predecessors = get_predecessors(cycles, rotations, assoc_rotations, filled1)
     (men_all, women_all, rotated_all, couples1, shortlists1) = eliminate_rotations(couples0, preferences, rotations)
     eliminated_all = []
 
@@ -184,21 +184,20 @@ def fill(couples0, preferences, array_men, rotations, cycles, weights, shortlist
             "shortlist": shortlists,
             "eliminated": eliminated_all[i]
         }
-    return couples1, shortlists1, filled1+1, counter, assoc_rotations
+    return couples1, shortlists1, counter, assoc_rotations
 
 
 def find_rotations(male_optimal, preferences, shortlists0):  # если assoc пустой то это единственное решение
     array_men = list(range(1, len(male_optimal) + 1))
     # первый поиск ротаций
     (cycles, rotations, weights) = gcrw(shortlists0, male_optimal, preferences)
-    (couples, shortlists, filled0, filled1, assoc_rotations) = fill1(array_men, male_optimal, preferences, rotations,
-                                                                     cycles, weights, shortlists0)
+    (couples, shortlists, filled1, assoc_rotations) = fill1(array_men, male_optimal, preferences, rotations, cycles,
+                                                            weights, shortlists0)
     # после первой итерации
     while rotations:
         (cycles, rotations, weights) = gcrw(shortlists, couples, preferences)
-        (couples, shortlists, filled0, filled1, assoc_rotations) = fill(couples, shortlists0, array_men, rotations,
-                                                                        cycles, weights, shortlists, assoc_rotations,
-                                                                        filled0, filled1)
+        (couples, shortlists, filled1, assoc_rotations) = fill(couples, shortlists0, array_men, rotations, cycles,
+                                                               weights, shortlists, assoc_rotations, filled1)
     return assoc_rotations
 
 
