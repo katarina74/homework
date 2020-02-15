@@ -3,11 +3,7 @@ import xlrd, xlwt
 
 # класс ошибки неправильных входных данных
 class MyError(Exception):
-    def __init__(self, text):
-        self.text = text
-
-    def get_text(self):
-        return self.text
+    pass
 
 
 # проверка корректности входных данных
@@ -43,7 +39,7 @@ def get_data_base(fname):
     except xlrd.biffh.XLRDError:
         return "Неправильный формат файла!"
     except MyError as mr:
-        return mr.get_text()
+        return str(mr)
     except:
         return "Неправильные входные данные или не выбран файл!"
     else:
@@ -61,4 +57,3 @@ def save_result(solution, f_name):
         return "Решение успешно сохранено!"
     else:
         return "Неверный формат файла! Решение не может быть сохранено!"
-
