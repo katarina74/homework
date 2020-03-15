@@ -267,7 +267,7 @@ def get_main(preferences):
     shortlists0 = get_shortlists(male_optimal, preferences)
 
     assoc_rotations = find_rotations(male_optimal, preferences, shortlists0)
-
+    print(assoc_rotations)
     if assoc_rotations:
         (t, labels, nodes, edges_list) = get_edges(assoc_rotations)
         matrix = get_matrix(t, nodes, edges_list, assoc_rotations)
